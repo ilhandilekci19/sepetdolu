@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ürün Detayları - Huawei FreeBuds SE 3</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        header {
+            background: #FF6A15;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        .product-detail {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .product-detail img {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .product-info {
+            margin-top: 1rem;
+        }
+        .product-info h2 {
+            margin: 0.5rem 0;
+        }
+        .product-info h3 {
+            margin: 0.5rem 0;
+            color: #FF6A15;
+        }
+        .product-info p {
+            margin: 1rem 0;
+            line-height: 1.5;
+        }
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .buttons button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: #FF6A15;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .buttons button:hover {
+            background: #FF6A15;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>SepetDolu</h1>
+    </header>
+    
+    <div class="product-detail">
+        <img src="{{ url_for('static', filename='images/huawei_freebuds_se_3.png') }}" alt="Huawei FreeBuds SE 3">
+        <div class="product-info">
+            <h2>Huawei FreeBuds SE 3</h2>
+            <h3>700₺</h3>
+            <p>
+                Bu ürün HUAWEİ adlı markanın yaptığı kulak içi bir kulaklıktır. Bluetoot 5.4 e sahip bu kulaklığın kutusunun altı deri kaplama kapağı ise plastik yapımdır. Ürün çok kullanışlıdır ve telefonunuz otomatik bağlanabilir
+            </p>
+            <div class="buttons">
+                <!-- Sepete Ekle Formu -->
+                <form action="{{ url_for('add_to_cart') }}" method="post">
+                    <input type="hidden" name="name" value="HUAWEI FreeBuds SE 3">
+                    <input type="hidden" name="price" value="700.0">
+                    <input type="hidden" name="image" value="{{ url_for('static', filename='images/huawei_freebuds_se_3.png') }}">
+                    <button type="submit">Sepete Ekle</button>
+                </form>
+
+                <!-- Hemen Al Formu -->
+                <form action="{{ url_for('add_to_cart') }}" method="post">
+                    <input type="hidden" name="name" value="HUAWEI FreeBuds SE 3">
+                    <input type="hidden" name="price" value="700.0">
+                    <input type="hidden" name="image" value="{{ url_for('static', filename='images/huawei_freebuds_se_3.png') }}">
+                    <input type="hidden" name="buy_now" value="true">
+                    <button type="submit">Satın Al = 700₺</button>
+                </form>
+
+                <button type="button" onclick="history.back()">Geri Dön</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+``` 

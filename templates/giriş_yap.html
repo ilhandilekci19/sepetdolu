@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Ekranı</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .login-container input[type="password"],
+        .login-container input[type="email"] {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .login-container input[type="submit"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: none;
+            background: #FF6A15;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-container input[type="submit"]:hover {
+            background: #FF6A15;
+        }
+        .switch-button {
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .switch-button button {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: #FF6A15;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .switch-button button:hover {
+            background: #FF6A15;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Giriş Yap</h2>
+        <form action="{{ url_for('login') }}" method="POST">
+            <input type="email" name="email" placeholder="E-posta Adresinizi Giriniz" required>
+            <input type="password" name="password" placeholder="Şifrenizi Giriniz" required>
+            <input type="submit" value="Giriş Yap">
+        </form>
+        <div class="switch-button">
+            <button type="button" onclick="location.href='{{ url_for('register') }}'">Kayıt Ol</button>
+        </div>
+    </div>
+</body>
+</html>

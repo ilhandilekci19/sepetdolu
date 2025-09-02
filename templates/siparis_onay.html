@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adres Bilgileri - SepetDolu</title>
+    <!-- Leaflet Harita Kütüphanesi CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 20px; background-color: #f8f9fa; }
+        .container { max-width: 800px; margin: auto; background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        #map { height: 400px; width: 100%; margin-top: 20px; border-radius: 8px; border: 1px solid #ddd; }
+        form { margin-top: 20px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        textarea { width: 100%; padding: 10px; min-height: 80px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
+        button { display: block; width: 100%; padding: 12px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; font-size: 18px; border-radius: 5px; margin-top: 20px; }
+        button:hover { background-color: #218838; }
+        .error { color: #dc3545; margin-bottom: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teslimat Adresi</h1>
+        <p>Lütfen teslimat adresinizi aşağıdaki alana girin veya haritadan bir nokta seçin.</p>
+        
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form action="{{ url_for('siparis_onay') }}" method="post">
+            <label for="address">Adres:</label>
+            <textarea id="address" name="address" rows="4" required placeholder="Sokak, mahalle, ilçe, il...">{{ current_address or '' }}</textarea>
+            
+            <div id="map"></div>
+            
+            <button type="submit">Siparişi Tamamla</button>
+        </form>
+    </div>
+
+    <!-- Leaflet Harita Kütüphanesi JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+            
+    <script>
+        // Haritayı Türkiye'nin merkezi bir noktasına odakla
+        const map = L.map('map').setView([39.9255, 32.8663], 6);
+
+        // OpenStreetMap katmanını haritaya ekle
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Sürüklenebilir bir işaretçi oluştur
+        let marker = L.marker(map.getCenter(), {
+            draggable: true
+        }).addTo(map);
+
+        const addressTextarea = document.getElementById('address');
+
+        function updateAddress(latlng) {
+            // Koordinatları adrese çevirmek için Nominatim API'sini kullan (Reverse Geocoding)
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&accept-language=tr`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        addressTextarea.value = data.display_name;
+                    } else {
+                        addressTextarea.value = `Enlem: ${latlng.lat.toFixed(5)}, Boylam: ${latlng.lng.toFixed(5)}`;
+                    }
+                })
+                .catch(err => {
+                    console.error('Adres bulunamadı:', err);
+                    addressTextarea.value = `Enlem: ${latlng.lat.toFixed(5)}, Boylam: ${latlng.lng.toFixed(5)}`;
+                });
+        }
+
+        // İşaretçi sürüklendiğinde adresi güncelle
+        marker.on('dragend', function(event) {
+            const position = marker.getLatLng();
+            updateAddress(position);
+        });
+
+        // Haritaya tıklandığında işaretçiyi o noktaya taşı ve adresi güncelle
+        map.on('click', function(e) {
+            marker.setLatLng(e.latlng);
+            updateAddress(e.latlng);
+        });
+
+        // Sayfa yüklendiğinde, eğer adres alanı (sunucudan gelen) boşsa,
+        // haritanın merkezine göre adresi al. Doluysa, o adresi koru.
+        if (addressTextarea.value.trim() === '') {
+            updateAddress(marker.getLatLng());
+        }
+    </script>
+</body>
+</html>
